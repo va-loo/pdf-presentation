@@ -320,7 +320,7 @@ async function saveAsPdf() {
     });
     const page = await browser.newPage();
     await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle0'});
-    const pdfBuffer = page.pdf({ printBackground: true });
+    const pdfBuffer = await page.pdf({ printBackground: true });
     await browser.close();
     return pdfBuffer;
 }
