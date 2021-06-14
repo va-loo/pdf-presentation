@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Shower Presentation Engine</title>
+    <title>Создание PDF из HTML</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="shower/themes/ribbon/styles/styles.css">
@@ -9,17 +9,344 @@
         .shower {
             --slide-ratio: calc(16 / 9);
         }
+        .slide code, .slide pre code {
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+        }
+        .slide table {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .columns-2 {
+            columns: 2;
+        }
+        #slide-1 {
+            padding-top: 130px;
+            background-color: #67d2ac;
+        }
+        #slide-1 h2 {
+            margin: 0;
+            padding: 0;
+            color: #3e8883;
+        }
+        #slide-1 .cover {
+            left: auto;
+            right: -10%;
+            transform: translate(0, -50%);
+        }
+        #slide-2 h2 {
+            font-size: 100px;
+        }
     </style>
 </head>
 <body class="shower list">
 
     <header class="caption">
-        <h1>Shower Presentation Engine</h1>
-        <p>Yours Truly, Famous Inc.</p>
+        <h1>Создание PDF из HTML</h1>
     </header>
 
-    <section class="slide">
-        <!-- Create your first slide -->
+    <section class="slide" id="slide-1">
+        <h2>Создание PDF из HTML</h2>
+        <p>с помощью Node.js и Puppeteer</p>
+        <figure>
+            <img src="./pictures/puppeteer-cover_1024x1024.png" alt="" class="cover">
+        </figure>
+    </section>
+
+    <section class="slide" id="slide-2">
+        <h2 class="shout">Клиент или Сервер?</h2>
+    </section>
+
+    <section class="slide" id="slide-3">
+        <h2>Создаем скриншот DOM-элемента</h2>
+        <ul>
+            <li>html2canvas</li>
+            <li>jsPDF</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-4">
+        <h2>Создаем скриншот DOM-элемента</h2>
+        <pre>
+            <code>
+async function saveAsPDF() {
+  const canvas = await html2canvas(document.getElementById("my-id"));
+  const imgData = canvas.toDataURL('image/png');
+  const { width, height } = canvas;
+
+  const pdf = new jsPDF();
+  const pdfContentWidth = pdf.internal.pageSize.width - 20;
+
+  pdf.addImage(imgData, 'PNG', 10, 10, pdfContentWidth, pdfContentWidth * (height / width));
+  pdf.save('my-pdf.pdf');
+}
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-5">
+        <h2>Используем библиотеку</h2>
+        <ul>
+            <li>jsPDF</li>
+            <li>pdfmake</li>
+            <li>PDFKit</li>
+            <li>...</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-6">
+        <h2>Используем библиотеку</h2>
+        <pre>
+            <code>
+const doc = new PDFDocument({ size: 'A4' });
+
+doc.font('fonts/PalatinoBold.ttf')
+  .fontSize(25)
+  .text('Some text with an embedded font!', 100, 100);
+    
+doc.image('path/to/image.png', {
+    fit: [250, 300],
+    align: 'center',
+    valign: 'center'
+});
+...
+doc.end();
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-7">
+        <h2>Node, Puppeteer, Headless Chrome</h2>
+        <figure>
+            <blockquote>
+                <p>Puppeteer is a Node library which provides a high-level API to control Chrome or Chromium over the DevTools Protocol. Puppeteer runs headless by default, but can be configured to run full (non-headless) Chrome or Chromium.</p>
+            </blockquote>
+            <figcaption>pptr.dev</figcaption>
+        </figure>
+    </section>
+
+    <section class="slide" id="slide-8">
+        <h2>Node, Puppeteer, Headless Chrome</h2>
+        <code>npm install puppeteer</code>
+        <br>
+        <pre>
+            <code>
+const browser = await puppeteer.launch();
+
+const page = await browser.newPage();
+await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle2'});
+await page.pdf({ path: 'hn.pdf' });
+
+await browser.close();
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-9">
+        <h2>Node, Puppeteer, Headless Chrome</h2>
+        <div style="margin-left: calc( var(--slide-side) * -1 ); margin-right: calc( var(--slide-side) * -1 )">
+            <img src="./pictures/site.png" alt="" style="height: 350px; width: auto; float: left; margin: 0 20px;">
+            <img src="./pictures/pdf.png" alt="" style="height: 350px; width: auto; float: left; margin: 0 20px;">
+        </div>
+    </section>
+
+    <section class="slide" id="slide-10">
+        <h2>page.pdf({ options })</h2>
+        <table>
+            <tbody>
+                <tr>
+                    <th>option</th><th>тип</th><th>default</th><th>пример</th>
+                </tr>
+                <tr>
+                    <td>path</td><td>string</td><td>-</td><td>hn.pdf</td>
+                </tr>
+                <tr>
+                    <td>scale</td><td>number</td><td>1</td><td>число из интервала [0.1 - 2]</td>
+                </tr>
+                <tr>
+                    <td>displayHeaderFooter</td><td>boolean</td><td>false</td><td></td>
+                </tr>
+                <tr>
+                    <td>headerTemplate</td><td>string</td><td>-</td><td>пример на отдельном слайде</td>
+                </tr>
+                <tr>
+                    <td>footerTemplate</td><td>string</td><td>-</td><td>пример на отдельном слайде</td>
+                </tr>
+                <tr>
+                    <td>printBackground</td><td>boolean</td><td>false</td><td></td>
+                </tr>
+                <tr>
+                    <td>landscape</td><td>boolean</td><td>false</td><td></td>
+                </tr>
+                <tr>
+                    <td>pageRanges</td><td>string</td><td>''</td><td>1-5, 8, 11-13</td>
+                </tr>
+                <tr>
+                    <td>format</td><td>string</td><td>'Letter'</td><td>пример на отдельном слайде</td>
+                </tr>
+                <tr>
+                    <td>width</td><td>string | number</td><td>-</td><td>100, '100px', '10cm'</td>
+                </tr>
+                <tr>
+                    <td>height</td><td>string | number</td><td>-</td><td>100, '100px', '10cm'</td>
+                </tr>
+                <tr>
+                    <td>margin</td><td>Object</td><td>-</td><td>{ top: '2cm', right: '2cm', bottom: '2cm', left: '3cm' }</td>
+                </tr>
+                <tr>
+                    <td>preferCSSPageSize</td><td>boolean</td><td>false</td><td></td>
+                </tr>
+                <tr>
+                    <td>omitBackground</td><td>boolean</td><td>false</td><td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide" id="slide-11">
+        <h2>page.pdf({ headerTemplate, footerTemplate })</h2>
+        <p>HTML-шаблон в виде строки, который поддерживает следующие CSS-классы для отображения значений:</p>
+        <ul>
+            <li><code>date</code> - дата печати</li>
+            <li><code>title</code> - заголовок документа</li>
+            <li><code>url</code> - url адрес</li>
+            <li><code>pageNumber</code> - номер страницы</li>
+            <li><code>totalPages</code> - количество страниц в документе</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-12">
+        <h2>page.pdf({ headerTemplate, footerTemplate })</h2>
+        <ul>
+            <li>Внутри разметки тег script игнорируется</li>
+            <li>CSS стили страницы не применяются к разметке</li>
+        </ul>
+        <pre>
+            <code>
+const inlineStyle = 'font-size: 16px; margin-left: 30px';
+...
+margin: { top: '100px', bottom: '200px', right: '30px', left: '30px' },
+displayHeaderFooter: true,
+headerTemplate: `&lt;p style="${inlineStyle}"&gt;&lt;span class="title"&gt;&lt;/span&gt;&lt;/p&gt;`,
+footerTemplate: `&lt;p style="${inlineStyle}"&gt;Page &lt;span class="pageNumber"&gt;&lt;/span&gt;&lt;/p&gt;`,
+...
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-13">
+        <h2>page.pdf({ headerTemplate, footerTemplate })</h2>
+        <img src="./pictures/header-footer-template.png" alt="" style="height: 75%; width: auto;">
+    </section>
+
+    <section class="slide" id="slide-14">
+        <h2>page.pdf({ format })</h2>
+        <ul class="columns-2">
+            <li><code>Letter</code>: 8.5in x 11in</li>
+            <li><code>Legal</code>: 8.5in x 14in</li>
+            <li><code>Tabloid</code>: 11in x 17in</li>
+            <li><code>Ledger</code>: 17in x 11in</li>
+            <li><code>A0</code>: 33.1in x 46.8in</li>
+            <li><code>A1</code>: 23.4in x 33.1in</li>
+            <li><code>A2</code>: 16.54in x 23.4in</li>
+            <li><code>A3</code>: 11.7in x 16.54in</li>
+            <li><code>A4</code>: 8.27in x 11.7in</li>
+            <li><code>A5</code>: 5.83in x 8.27in</li>
+            <li><code>A6</code>: 4.13in x 5.83in</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-15">
+        <h2>Единицы измерения</h2>
+        <ul>
+            <li><code>px</code> - пиксели</li>
+            <li><code>in</code> - дюймы</li>
+            <li><code>cm</code> - сантиметры</li>
+            <li><code>mm</code> - миллиметры</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-16">
+        <h2>Ограничения</h2>
+        <ol>
+            <li>Создание PDF пока доступно только для headless Chrome / Chromium</li>
+            <li>По умолчанию page.pdf() создает PDF в палитре цветов для печати. Исправляется заданием <code>-webkit-print-color-adjust: exact;</code> в CSS</li>
+            <li><a href="https://github.com/puppeteer/puppeteer/issues" target="_blank">https://github.com/puppeteer/puppeteer/issues</a></li>
+        </ol>
+    </section>
+
+    <section class="slide" id="slide-17">
+        <h2>Стили для печати</h2>
+        <p>
+            <code>page.pdf()</code> перед созданием PDF применяет к странице стили для печати (<code>print</code> CSS media). Но это можно изменить следующими настройками:
+        </p>
+        <pre>
+            <code>
+...
+await page.emulateMediaType('screen');
+await page.pdf({ path: 'page.pdf' });
+...
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-18">
+        <h2>Стили для печати</h2>
+        <ul>
+            <li>Скрыть блоки, которые не нужны в PDF</li>
+            <li>Модифицировать стили существующих элементов</li>
+        </ul>
+        <p><a href="https://www.youtube.com/watch?v=xVPCZFBpjsI">Доклад о возможностях CSS Paged Media Module</a></p>
+    </section>
+
+    <section class="slide" id="slide-19">
+        <h2>Как отправить PDF на клиент?</h2>
+        <ul>
+            <li><a href="https://angular.io/guide/universal" target="_blank">Server-side rendering with Angular Universal</a></li>
+            <li>Web server with Node.js</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide-20">
+        <h2>Как отправить PDF на клиент?</h2>
+        <pre>
+            <code>
+import * as puppeteer from 'puppeteer-core';
+...
+async function saveAsPdf() {
+    const browser = await puppeteer.launch({
+        executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
+    });
+    const page = await browser.newPage();
+    await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle0'});
+    const pdfBuffer = page.pdf({ printBackground: true });
+    await browser.close();
+    return pdfBuffer;
+}
+...
+            </code>
+        </pre>
+    </section>
+
+    <section class="slide" id="slide-21">
+        <h2>Как отправить PDF на клиент?</h2>
+        <pre>
+            <code>
+...
+server.get('/api/pdf', async (req, res) => {
+    try {
+        const pdfBuffer = await saveAsPdf(); // PDF Buffer from puppeteer
+        res.attachment('my-pdf.pdf');
+        res.contentType('application/pdf');
+        res.send(pdfBuffer);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
+...
+            </code>
+        </pre>
     </section>
 
     <footer class="badge">
