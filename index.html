@@ -9,6 +9,9 @@
         .shower {
             --slide-ratio: calc(16 / 9);
         }
+        .slide h2 {
+            color: #3e8883;
+        }
         .slide code, .slide pre code {
             font-size: 16px;
             line-height: 1.6;
@@ -22,18 +25,15 @@
             columns: 2;
         }
         #slide-1 {
-            padding-top: 130px;
-            background-color: #67d2ac;
+            padding-top: 150px;
         }
         #slide-1 h2 {
             margin: 0;
             padding: 0;
-            color: #3e8883;
         }
-        #slide-1 .cover {
-            left: auto;
-            right: -10%;
-            transform: translate(0, -50%);
+        #slide-1 img {
+            float: right;
+            margin-top: -160px;
         }
         #slide-2 h2 {
             font-size: 100px;
@@ -50,11 +50,11 @@
         <h2>Создание PDF из HTML</h2>
         <p>с помощью Node.js и Puppeteer</p>
         <figure>
-            <img src="./pictures/puppeteer-cover_1024x1024.png" alt="" class="cover">
+            <img src="./pictures/pptr.png" alt="">
         </figure>
     </section>
 
-    <section class="slide" id="slide-2">
+    <!-- <section class="slide" id="slide-2">
         <h2 class="shout">Клиент или Сервер?</h2>
     </section>
 
@@ -114,7 +114,7 @@ doc.image('path/to/image.png', {
 doc.end();
             </code>
         </pre>
-    </section>
+    </section> -->
 
     <section class="slide" id="slide-7">
         <h2>Node, Puppeteer, Headless Chrome</h2>
@@ -132,11 +132,13 @@ doc.end();
         <br>
         <pre>
             <code>
+import * as puppeteer from 'puppeteer';
+
 const browser = await puppeteer.launch();
 
 const page = await browser.newPage();
-await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle2'});
-await page.pdf({ path: 'hn.pdf' });
+await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle0'});
+await page.pdf({ path: 'hn.pdf', format: 'a4' });
 
 await browser.close();
             </code>
@@ -183,13 +185,13 @@ await browser.close();
                     <td>pageRanges</td><td>string</td><td>''</td><td>1-5, 8, 11-13</td>
                 </tr>
                 <tr>
-                    <td>format</td><td>string</td><td>'Letter'</td><td>пример на отдельном слайде</td>
+                    <td>format</td><td>string</td><td>'Letter'</td><td>'Letter', 'A0', ..., 'A6' и др.</td>
                 </tr>
                 <tr>
-                    <td>width</td><td>string | number</td><td>-</td><td>100, '100px', '10cm'</td>
+                    <td>width</td><td>string | number</td><td>-</td><td>100, '100px', '10cm', '8in', '1000mm'</td>
                 </tr>
                 <tr>
-                    <td>height</td><td>string | number</td><td>-</td><td>100, '100px', '10cm'</td>
+                    <td>height</td><td>string | number</td><td>-</td><td>100, '100px', '10cm', '8in', '1000mm'</td>
                 </tr>
                 <tr>
                     <td>margin</td><td>Object</td><td>-</td><td>{ top: '2cm', right: '2cm', bottom: '2cm', left: '3cm' }</td>
@@ -218,10 +220,6 @@ await browser.close();
 
     <section class="slide" id="slide-12">
         <h2>page.pdf({ headerTemplate, footerTemplate })</h2>
-        <ul>
-            <li>Внутри разметки тег script игнорируется</li>
-            <li>CSS стили страницы не применяются к разметке</li>
-        </ul>
         <pre>
             <code>
 const inlineStyle = 'font-size: 16px; margin-left: 30px';
@@ -233,6 +231,10 @@ footerTemplate: `&lt;p style="${inlineStyle}"&gt;Page &lt;span class="pageNumber
 ...
             </code>
         </pre>
+        <ul>
+            <li>Внутри разметки тег script игнорируется</li>
+            <li>CSS стили страницы не применяются к разметке</li>
+        </ul>
     </section>
 
     <section class="slide" id="slide-13">
@@ -240,7 +242,7 @@ footerTemplate: `&lt;p style="${inlineStyle}"&gt;Page &lt;span class="pageNumber
         <img src="./pictures/header-footer-template.png" alt="" style="height: 75%; width: auto;">
     </section>
 
-    <section class="slide" id="slide-14">
+    <!-- <section class="slide" id="slide-14">
         <h2>page.pdf({ format })</h2>
         <ul class="columns-2">
             <li><code>Letter</code>: 8.5in x 11in</li>
@@ -255,9 +257,9 @@ footerTemplate: `&lt;p style="${inlineStyle}"&gt;Page &lt;span class="pageNumber
             <li><code>A5</code>: 5.83in x 8.27in</li>
             <li><code>A6</code>: 4.13in x 5.83in</li>
         </ul>
-    </section>
+    </section> -->
 
-    <section class="slide" id="slide-15">
+    <!-- <section class="slide" id="slide-15">
         <h2>Единицы измерения</h2>
         <ul>
             <li><code>px</code> - пиксели</li>
@@ -265,18 +267,9 @@ footerTemplate: `&lt;p style="${inlineStyle}"&gt;Page &lt;span class="pageNumber
             <li><code>cm</code> - сантиметры</li>
             <li><code>mm</code> - миллиметры</li>
         </ul>
-    </section>
+    </section> -->
 
     <section class="slide" id="slide-16">
-        <h2>Ограничения</h2>
-        <ol>
-            <li>Создание PDF пока доступно только для headless Chrome / Chromium</li>
-            <li>По умолчанию page.pdf() создает PDF в палитре цветов для печати. Исправляется заданием <code>-webkit-print-color-adjust: exact;</code> в CSS</li>
-            <li><a href="https://github.com/puppeteer/puppeteer/issues" target="_blank">https://github.com/puppeteer/puppeteer/issues</a></li>
-        </ol>
-    </section>
-
-    <section class="slide" id="slide-17">
         <h2>Стили для печати</h2>
         <p>
             <code>page.pdf()</code> перед созданием PDF применяет к странице стили для печати (<code>print</code> CSS media). Но это можно изменить следующими настройками:
@@ -291,19 +284,27 @@ await page.pdf({ path: 'page.pdf' });
         </pre>
     </section>
 
-    <section class="slide" id="slide-18">
+    <section class="slide" id="slide-17">
         <h2>Стили для печати</h2>
         <ul>
             <li>Скрыть блоки, которые не нужны в PDF</li>
             <li>Модифицировать стили существующих элементов</li>
         </ul>
-        <p><a href="https://www.youtube.com/watch?v=xVPCZFBpjsI">Доклад о возможностях CSS Paged Media Module</a></p>
+    </section>
+
+    <section class="slide" id="slide-18">
+        <h2>Ограничения</h2>
+        <ol>
+            <li>Создание PDF пока доступно только для headless Chrome / Chromium</li>
+            <li>По умолчанию page.pdf() создает PDF в палитре цветов для печати. Исправляется заданием <code>-webkit-print-color-adjust: exact;</code> в CSS</li>
+            <li><a href="https://github.com/puppeteer/puppeteer/issues" target="_blank">https://github.com/puppeteer/puppeteer/issues</a></li>
+        </ol>
     </section>
 
     <section class="slide" id="slide-19">
         <h2>Как отправить PDF на клиент?</h2>
         <ul>
-            <li><a href="https://angular.io/guide/universal" target="_blank">Server-side rendering with Angular Universal</a></li>
+            <li><a href="https://angular.io/guide/universal" target="_blank">Angular Universal</a></li>
             <li>Web server with Node.js</li>
         </ul>
     </section>
@@ -312,12 +313,10 @@ await page.pdf({ path: 'page.pdf' });
         <h2>Как отправить PDF на клиент?</h2>
         <pre>
             <code>
-import * as puppeteer from 'puppeteer-core';
+import * as puppeteer from 'puppeteer';
 ...
-async function saveAsPdf() {
-    const browser = await puppeteer.launch({
-        executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
-    });
+async function getPdfBuffer() {
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto('https://news.ycombinator.com', {waitUntil: 'networkidle0'});
     const pdfBuffer = await page.pdf({ printBackground: true });
@@ -336,7 +335,7 @@ async function saveAsPdf() {
 ...
 server.get('/api/pdf', async (req, res) => {
     try {
-        const pdfBuffer = await saveAsPdf(); // PDF Buffer from puppeteer
+        const pdfBuffer = await getPdfBuffer();
         res.attachment('my-pdf.pdf');
         res.contentType('application/pdf');
         res.send(pdfBuffer);
@@ -347,6 +346,10 @@ server.get('/api/pdf', async (req, res) => {
 ...
             </code>
         </pre>
+    </section>
+
+    <section class="slide" id="slide-22">
+        <h2 class="shout">Спасибо!</h2>
     </section>
 
     <footer class="badge">
